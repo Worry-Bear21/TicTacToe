@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body class="flex justify-center min-h-screen items-center bg-gradient-to-r from-[#fef08a] via-[#84cc16] to-[#16a34a]">
+    <div id="app">
+        <div v-if="showGame">
+            <div>
+                <h1 class="text-6xl font-bold flex justify-center mt-2">𝔾𝕠𝕠𝕕𝔾𝕒𝕞𝕖</h1>
+            </div>
+            <div class="grid grid-cols-3 mt-2 flex justify-center">
+                <div v-for="(row, rowIndex) in cells">
+                    <div v-for=" (cell, colIndex) in row"
+                        class="text-black bg-gray-800 hover:text-white cursor-pointer border-5 border-black rounded-3xl mt-2 w-25 h-25 shadow-lg flex justify-center hover:scale-110 items-center text-center shadow-lg"
+                        @click="pindota(rowIndex,colIndex)"
+                        :class="{'text-red-500 text-5xl font-semibold' :cell==='X','font-semibold text-blue-500 text-5xl':cell==='O'}">
+                        {{cell}}
+                    </div>
+                </div>
+            </div>
+            <h1 class="text-3xl font-semibold justify-center flex mt-5">{{message}}</h1>
+        </div>
+        <div v-if="custom" class="bg-blue-700 px-3 py-2 rounded-2xl">
+            <h1 class="text-7xl font-bold text-yellow-500">TIC TAC TOE</h1>
+            <div class="flex gap-20 font-mono">
+                <h1 class="text-9xl font-bold text-sky-400 font-extrabold">X</h1>
+                <h1 class="text-9xl font-bold text-sky-400 font-extrabold">O</h1>
+                <h1 class="text-9xl font-bold text-sky-400 font-extrabold">X</h1>
+                <button @click="play"
+                    class="border px-3 py-2 rounded-2xl bg-green-500 animate-bounce absolute left-169 mt-15 flex ">Play
+                    with me</button>
+                </div>
+            </div>
+            <button @click="closeGame" class="text-3xl py-2 px-3 bg-blue-500 absolute rounded-2xl left-342 top-161">Exit Game</button>
+
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    cells: [
+                        ["", "", ""],
+                        ["", "", ""],
+                        ["", "", ""],
+
+                    ],
+                    Player1: "X",
+                    message: "DULA TA PRE",
+                    showGame: false,
+                    custom: true,
+                }
+            },
+            methods: {
+                pindota(rowIndex, colIndex) {
+                    if (this.cells[rowIndex][colIndex] === "") {
+                        this.cells[rowIndex][colIndex] = this.Player1;
+                        if (this.isWinner(this.Player1)) {
+                            this.message = `Player ${this.Player1} wins!`
+                            setTimeout(this.reset, 1500);
+                        } else if (this.isDraw()) {
+                            this.message = "Game is Draw";
+                            setTimeout(this.reset, 1500);
+                        }
+                        else {
+                            this.Player1 = this.Player1 === "X" ? "O" : "X";
+                            this.message = `Player ${this.Player1} turn`
+                        }
+
+                    }
+                },
+                isWinner(player) {
+                    const c = this.cells;
+                    for (let i = 0; i < 3; i++) {
+                        if (c[i][0] === player && c[i][1] === player && c[i][2] === player) return true;
+                        if (c[0][i] === player && c[1][i] === player && c[2][i] === player) return true;
+
+                    }
+                    if (c[0][0] === player && c[1][1] === player && c[2][2] === player) return true;
+                    if (c[0][2] === player && c[1][1] === player && c[2][0] === player) return true;
+                },
+                reset() {
+                    this.cells = [
+                        ["", "", ""],
+                        ["", "", ""],
+                        ["", "", ""],
+                    ],
+                        this.message = "DULA TA PRE"
+                },
+                isDraw() {
+                    let allClicked = false;
+                    for (let row of this.cells) {
+                        for (let cell of row) {
+                            if (cell === "") {
+                                allClicked = true;
+                            }
+                        }
+                    }
+                    if (!allClicked && !this.isWinner("X") && !this.isWinner('O')) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+
+                play() {
+
+                    this.showGame = true;
+                },
+                closeGame() {
+                    this.showGame = false;
+                },
+                closecustom() {
+                    this.custome = false;
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
